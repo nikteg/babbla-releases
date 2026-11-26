@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Babbla – chat and voice for your own crowd</title>
+    <meta
+      name="description"
+      content="Babbla is a self-hosted chat and voice app. Text and voice channels, DMs, screen sharing with drawing and remote co-op gaming. Desktop app for macOS, Windows and Linux."
+    />
+    <meta name="theme-color" content="#692bcf" />
+    <meta property="og:title" content="Babbla" />
+    <meta property="og:description" content="Self-hosted chat and voice for your own crowd." />
+    <meta property="og:image" content="https://babbla.sodapop.se/icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link
+      rel="preload"
+      href="fonts/fredoka-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="fonts/nunito-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="download.js" defer></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="#">
+        <img src="icon.png" alt="" width="36" height="36" />
+        <span>Babbla</span>
+      </a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#server">Run a server</a>
+        <a href="#download">Download</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Your own place to hang out</h1>
+        <p class="lede">
+          Babbla is chat and voice for your friends, your guild or your team, on a server you run
+          yourself. Talk in channels, jump into voice, share your screen and draw on it, or hand out
+          controllers and play together.
+        </p>
+        <div class="cta">
+          <a class="button primary" id="primary-download" href="#download">Download Babbla</a>
+          <a class="button" href="#server">Run a server</a>
+        </div>
+        <p class="hint" id="primary-hint">
+          For macOS, Windows and Linux. Or open your server in any browser.
+        </p>
+        <img
+          class="shot hero-shot"
+          src="screenshots/hero.webp"
+          alt="Babbla: a channel with messages, a code snippet, a photo, reactions and a thread, next to the member list"
+          width="1600"
+          height="1000"
+        />
+      </section>
+
+      <section id="features" class="features">
+        <h2>Everything a group chat needs</h2>
+
+        <article class="feature">
+          <div class="text">
+            <h3>Channels that feel alive</h3>
+            <p>
+              Markdown, code blocks, pictures and video, reactions, replies, pins and link previews.
+              Search finds old messages, and unread and mention badges show where to look.
+            </p>
+          </div>
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="screenshots/chat-dark.webp" />
+            <img
+              class="shot"
+              src="screenshots/chat-light.webp"
+              alt="A channel with markdown, code, pictures, reactions and replies"
+              loading="lazy"
+              width="1600"
+              height="1000"
+            />
+          </picture>
+        </article>
+
+        <article class="feature flip">
+          <div class="text">
+            <h3>Threads beside the channel</h3>
+            <p>
+              Take a side conversation into a thread without losing the main one. Thread replies
+              notify the people in it.
+            </p>
+          </div>
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="screenshots/thread-dark.webp" />
+            <img
+              class="shot"
+              src="screenshots/thread-light.webp"
+              alt="A thread open beside the channel"
+              loading="lazy"
+              width="1600"
+              height="1000"
+            />
+          </picture>
+        </article>
+
+        <article class="feature">
+          <div class="text">
+            <h3>Voice, video and screens</h3>
+            <p>
+              Drop into a voice channel with push to talk, cameras and per-person volume. Share your
+              screen and let friends draw on it: in the desktop app you see their strokes right on
+              top of your screen.
+            </p>
+          </div>
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="screenshots/voice-dark.webp" />
+            <img
+              class="shot"
+              src="screenshots/voice-light.webp"
+              alt="A voice channel with cameras"
+              loading="lazy"
+              width="1600"
+              height="1000"
+            />
+          </picture>
+        </article>
+
+        <article class="feature flip">
+          <div class="text">
+            <h3>Direct messages</h3>
+            <p>
+              Talk one to one or start a group with a few friends. Calls ring in the app, and
+              mentions, replies and DMs land in your inbox.
+            </p>
+          </div>
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="screenshots/dms-dark.webp" />
+            <img
+              class="shot"
+              src="screenshots/dms-light.webp"
+              alt="Direct messages, one to one or in a group"
+              loading="lazy"
+              width="1600"
+              height="1000"
+            />
+          </picture>
+        </article>
+
+        <ul class="more">
+          <li>
+            <strong>Remote co-op:</strong> share a game, hand out controller slots, play together
+          </li>
+          <li>
+            <strong>Notifications:</strong> an inbox, OS notifications and web push, mute per
+            channel
+          </li>
+          <li><strong>Sign-in:</strong> password, GitHub, Google, Microsoft or OpenID Connect</li>
+          <li><strong>Themes:</strong> five of them, in English and Swedish</li>
+          <li><strong>Bots and AI agents:</strong> API keys and a built-in MCP server</li>
+          <li><strong>On phones:</strong> installs as a web app, no store needed</li>
+        </ul>
+      </section>
+
+      <section id="server" class="server">
+        <h2>Run a server</h2>
+        <p>
+          A Babbla server is one community: you own it and the data in it. It runs with Docker, next
+          to <a href="https://livekit.io">LiveKit</a> for voice and video, and serves the web app
+          too, so people can join from a browser without installing anything.
+        </p>
+        <ol class="steps">
+          <li>
+            Start the Babbla server and LiveKit with Docker Compose, behind a domain with TLS.
+          </li>
+          <li>
+            Open the server in a browser and create the first account with the invite code from the
+            log. That account is the admin.
+          </li>
+          <li>Send invites to your people. They sign up in the browser or in the desktop app.</li>
+        </ol>
+      </section>
+
+      <section id="download" class="download">
+        <h2>Download the desktop app</h2>
+        <p id="release-info">
+          The desktop app is for macOS, Windows and Linux, and updates itself.
+        </p>
+        <div class="platforms" id="platforms">
+          <a
+            class="platform"
+            data-asset="arm64.dmg"
+            href="https://github.com/nikteg/babbla-releases/releases/latest"
+          >
+            <strong>macOS</strong><span>Apple silicon</span>
+          </a>
+          <a
+            class="platform"
+            data-asset="x64.dmg"
+            href="https://github.com/nikteg/babbla-releases/releases/latest"
+          >
+            <strong>macOS</strong><span>Intel</span>
+          </a>
+          <a
+            class="platform"
+            data-asset="x64.exe"
+            href="https://github.com/nikteg/babbla-releases/releases/latest"
+          >
+            <strong>Windows</strong><span>64-bit installer</span>
+          </a>
+          <a
+            class="platform"
+            data-asset="x86_64.AppImage"
+            href="https://github.com/nikteg/babbla-releases/releases/latest"
+          >
+            <strong>Linux</strong><span>AppImage</span>
+          </a>
+        </div>
+        <p class="note">
+          The macOS app is not signed yet. After moving it to Applications, run
+          <code>xattr -cr /Applications/Babbla.app</code> once, or allow it in System Settings &gt;
+          Privacy &amp; Security. Windows may show SmartScreen the first time: choose More info &gt;
+          Run anyway.
+        </p>
+        <p><a href="https://github.com/nikteg/babbla-releases/releases">All releases</a></p>
+      </section>
+    </main>
+
+    <footer>
+      <img src="icon.png" alt="" width="28" height="28" />
+      <span>Babbla – self-hosted chat and voice</span>
+    </footer>
+  </body>
+</html>
