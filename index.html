@@ -39,7 +39,6 @@
       </a>
       <nav>
         <a href="#features">Features</a>
-        <a href="#server">Run a server</a>
         <a href="#download">Download</a>
       </nav>
     </header>
@@ -54,7 +53,7 @@
         </p>
         <div class="cta">
           <a class="button primary" id="primary-download" href="#download">Download Babbla</a>
-          <a class="button" href="#server">Run a server</a>
+          <a class="button" href="#features">See what it does</a>
         </div>
         <p class="hint" id="primary-hint">
           For macOS, Windows and Linux. Or open your server in any browser.
@@ -171,25 +170,6 @@
         </ul>
       </section>
 
-      <section id="server" class="server">
-        <h2>Run a server</h2>
-        <p>
-          A Babbla server is one community: you own it and the data in it. It runs with Docker, next
-          to <a href="https://livekit.io">LiveKit</a> for voice and video, and serves the web app
-          too, so people can join from a browser without installing anything.
-        </p>
-        <ol class="steps">
-          <li>
-            Start the Babbla server and LiveKit with Docker Compose, behind a domain with TLS.
-          </li>
-          <li>
-            Open the server in a browser and create the first account with the invite code from the
-            log. That account is the admin.
-          </li>
-          <li>Send invites to your people. They sign up in the browser or in the desktop app.</li>
-        </ol>
-      </section>
-
       <section id="download" class="download">
         <h2>Download the desktop app</h2>
         <p id="release-info">
@@ -226,10 +206,7 @@
           </a>
         </div>
         <p class="note">
-          The macOS app is not signed yet. After moving it to Applications, run
-          <code>xattr -cr /Applications/Babbla.app</code> once, or allow it in System Settings &gt;
-          Privacy &amp; Security. Windows may show SmartScreen the first time: choose More info &gt;
-          Run anyway.
+          Windows may show SmartScreen the first time: choose More info &gt; Run anyway.
         </p>
         <p><a href="https://github.com/nikteg/babbla-releases/releases">All releases</a></p>
       </section>

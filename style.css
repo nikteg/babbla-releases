@@ -254,23 +254,13 @@ h2 {
   color: var(--text);
 }
 
-.server,
 .download {
   max-width: 760px;
   margin: 0 auto;
 }
 
-.server p,
 .download p {
   color: var(--muted);
-}
-
-.steps {
-  padding-left: 1.4em;
-}
-
-.steps li {
-  margin-bottom: 10px;
 }
 
 .download {
