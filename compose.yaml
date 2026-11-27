@@ -1,0 +1,112 @@
+# Babbla from the published images: the server (with the web UI) from ghcr.io and LiveKit for
+# voice and video. Served at https://babbla.sodapop.se/compose.yaml (site/compose.yaml in the
+# source; the LiveKit settings follow deploy/livekit.yaml there).
+#
+# 1. Put this file in an empty folder, next to a .env with at least:
+#      BABBLA_JWT_SECRET=...       (openssl rand -hex 32)
+#      LIVEKIT_API_SECRET=...      (openssl rand -hex 32)
+#      LIVEKIT_URL=wss://livekit.example.com   (where browsers reach LiveKit)
+#      BABBLA_PUBLIC_URL=https://chat.example.com
+# 2. docker compose up -d
+# 3. docker compose logs babbla | grep "invite code"   (the first account becomes the admin)
+#
+# Put a TLS reverse proxy (for example Caddy) in front: chat.example.com to port 8000 and
+# livekit.example.com to port 7880, both with websockets. Forward TCP 7881 and UDP 7882 on the
+# router to this host for voice and video over the internet.
+# Update: docker compose pull && docker compose up -d. Pin a version with BABBLA_VERSION=X.Y.Z.
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "5" }
+
+services:
+  babbla:
+    image: ghcr.io/nikteg/babbla:${BABBLA_VERSION:-latest}
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      # 127.0.0.1:8000 keeps it off the network (only a proxy on the host reaches it).
+      - "${HTTP_PORT:-8000}:8000"
+    environment:
+      BABBLA_JWT_SECRET: ${BABBLA_JWT_SECRET:?Set BABBLA_JWT_SECRET in .env}
+      BABBLA_SERVER_NAME: ${BABBLA_SERVER_NAME:-Babbla}
+      BABBLA_SERVER_DESCRIPTION: ${BABBLA_SERVER_DESCRIPTION:-}
+      BABBLA_PUBLIC_URL: ${BABBLA_PUBLIC_URL:-}
+      # Sign-in providers as JSON: [{"id": "github", "type": "github", "client_id": "...", "client_secret": "..."}]
+      BABBLA_OAUTH: ${BABBLA_OAUTH:-}
+      # GIF search: klipy or tenor, and its API key.
+      BABBLA_GIF_PROVIDER: ${BABBLA_GIF_PROVIDER:-}
+      BABBLA_GIF_API_KEY: ${BABBLA_GIF_API_KEY:-}
+      # IPs of the reverse proxy whose X-Forwarded-* headers to trust.
+      BABBLA_FORWARDED_ALLOW_IPS: ${BABBLA_FORWARDED_ALLOW_IPS:-127.0.0.1}
+      LIVEKIT_URL: ${LIVEKIT_URL:-ws://localhost:7880}
+      LIVEKIT_API_URL: http://livekit:7880
+      LIVEKIT_API_KEY: babbla
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:?Set LIVEKIT_API_SECRET in .env}
+    volumes:
+      - babbla-data:/data
+
+  livekit:
+    # The released LiveKit image. Babbla's own builds add a patch that helps game streams
+    # recover from packet loss; everything works without it.
+    image: livekit/livekit-server:v1.13.11
+    restart: unless-stopped
+    logging: *logging
+    command: --config /etc/livekit.yaml
+    ports:
+      - "${LIVEKIT_PORT:-7880}:7880" # signalling, through the reverse proxy
+      - "7881:7881/tcp" # media, straight from clients
+      - "7882:7882/udp"
+    environment:
+      LIVEKIT_KEYS: "babbla: ${LIVEKIT_API_SECRET}"
+    configs:
+      - source: livekit
+        target: /etc/livekit.yaml
+
+configs:
+  livekit:
+    content: |
+      port: 7880
+      rtc:
+        tcp_port: 7881
+        udp_port: 7882
+        # Advertise the public IP (found with STUN). On a LAN-only server, replace this
+        # with node_ip: <the host's LAN address>.
+        use_external_ip: true
+        packet_buffer_size_video: 1500
+      room:
+        playout_delay:
+          enabled: true
+          min: 0
+          max: 500
+        enabled_codecs:
+          - mime: audio/opus
+          - mime: audio/red
+          - mime: audio/pcmu
+          - mime: audio/pcma
+          - mime: video/vp8
+          - mime: video/h264
+          - mime: video/h264
+            fmtp_line: level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f
+          - mime: video/h264
+            fmtp_line: level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f
+          - mime: video/h264
+            fmtp_line: level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f
+          - mime: video/h264
+            fmtp_line: level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=4d001f
+          - mime: video/vp9
+          - mime: video/av1
+          - mime: video/h265
+          - mime: video/rtx
+      audio:
+        update_interval: 200
+        smooth_intervals: 2
+      webhook:
+        api_key: babbla
+        urls:
+          - http://babbla:8000/api/livekit/webhook
+      logging:
+        level: info
+
+volumes:
+  babbla-data:

@@ -40,6 +40,7 @@
       <nav>
         <a href="#features">Features</a>
         <a href="#download">Download</a>
+        <a href="#server">Run a server</a>
       </nav>
     </header>
 
@@ -209,6 +210,35 @@
           Windows may show SmartScreen the first time: choose More info &gt; Run anyway.
         </p>
         <p><a href="https://github.com/nikteg/babbla-releases/releases">All releases</a></p>
+      </section>
+
+      <section id="server" class="server">
+        <h2>Run your own server</h2>
+        <p>
+          The server, with the web app built in, is one Docker image:
+          <code>ghcr.io/nikteg/babbla</code>. Next to it runs LiveKit for voice and video. All you
+          need is Docker and a domain with TLS in front (for example Caddy).
+        </p>
+        <pre><code>mkdir babbla &amp;&amp; cd babbla
+curl -fsSLO https://babbla.sodapop.se/compose.yaml
+cat &gt; .env &lt;&lt;EOF
+BABBLA_JWT_SECRET=$(openssl rand -hex 32)
+LIVEKIT_API_SECRET=$(openssl rand -hex 32)
+BABBLA_PUBLIC_URL=https://chat.example.com
+LIVEKIT_URL=wss://livekit.example.com
+EOF
+docker compose up -d
+docker compose logs babbla | grep "invite code"</code></pre>
+        <p>
+          Point your proxy at port 8000 for chat.example.com and 7880 for livekit.example.com (both
+          with websockets), and forward TCP 7881 and UDP 7882 to the host for voice. Open the server
+          in a browser and sign up with the invite code from the log: the first account is the
+          admin. To update, run <code>docker compose pull &amp;&amp; docker compose up -d</code>.
+        </p>
+        <p class="note">
+          Just the image: <code>docker pull ghcr.io/nikteg/babbla</code>. Pin a version with
+          <code>BABBLA_VERSION=X.Y.Z</code> in <code>.env</code>.
+        </p>
       </section>
     </main>
 
