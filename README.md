@@ -67,6 +67,30 @@ Babbla connects to a Babbla server: you need its address and an invite from some
 
 All downloads are on the [Releases](https://github.com/nikteg/babbla-releases/releases/latest) page. Start the app, enter your server's address and sign in.
 
+## Run your own server
+
+The server, with the web app built in, is one Docker image: `ghcr.io/nikteg/babbla` (tags `latest`, `X.Y` and `X.Y.Z`, for `linux/amd64` and `linux/arm64`). Next to it runs LiveKit for voice and video. You need Docker and a domain with TLS in front (for example Caddy).
+
+```sh
+mkdir babbla && cd babbla
+curl -fsSLO https://babbla.sodapop.se/compose.yaml
+cat > .env <<EOF
+BABBLA_JWT_SECRET=$(openssl rand -hex 32)
+LIVEKIT_API_SECRET=$(openssl rand -hex 32)
+BABBLA_PUBLIC_URL=https://chat.example.com
+LIVEKIT_URL=wss://livekit.example.com
+EOF
+docker compose up -d
+docker compose logs babbla | grep "invite code"
+```
+
+Point your proxy at port 8000 for `chat.example.com` and 7880 for `livekit.example.com`, both with websockets on, and forward TCP 7881 and UDP 7882 to the host for voice and video. Open the server in a browser and sign up with the invite code from the log: the first account is the server admin and can invite the rest under **Settings > Invites**.
+
+- **Update:** `docker compose pull && docker compose up -d`. Database migrations run on startup.
+- **Pin a version:** `BABBLA_VERSION=X.Y.Z` in `.env`.
+- **More settings** (sign-in with GitHub, Google, Microsoft or OpenID Connect, GIF search, server name) are in the comments of `compose.yaml`.
+- **Just the image:** `docker pull ghcr.io/nikteg/babbla`. It serves on port 8000 and keeps its data in `/data`.
+
 ## About this repository
 
-This repository only holds the desktop installers and the update files the app checks. Babbla's source and server are developed in a separate repository.
+This repository only holds the desktop installers and the update files the app checks; the server image is on GHCR. Babbla's source and server are developed in a separate repository.
